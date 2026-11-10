@@ -1,0 +1,2 @@
+Number_of_equations,Number_of_parameters,Number_of_test_points,Joint_numerical_rank,Full_column_rank,Smallest_singular_value,Largest_singular_value,Condition_number
+7,21,30,21,True,0.10091470303232054,2.1723106655042304,21.526205797865664

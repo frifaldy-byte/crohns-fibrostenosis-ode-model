@@ -1,0 +1,8 @@
+Equation,Number_of_parameters,Numerical_rank,Full_column_rank,Smallest_singular_value
+dI/dt,3,3,True,1.9011035426687657
+dS/dt,2,2,True,2.262171490519445
+dR/dt,3,3,True,0.35682036302843284
+dM/dt,3,3,True,0.3331363313897837
+dT/dt,3,3,True,0.18713741270292258
+dF/dt,5,5,True,0.0738619187736182
+dC/dt,2,2,True,2.1556823559934752

@@ -1,0 +1,9 @@
+Record_ID,Reference_ID,Figure,Panel,Outcome,Required_groups,Priority
+MC_SUCRN1_mRNA,MaciasCeja2019,Figure 2d,mRNA,SUCNR1,"0, 0.1, 0.5, 1, 5 mM",High
+MC_COL1A1_mRNA,MaciasCeja2019,Figure 2d,mRNA,COL1A1,"0, 0.1, 0.5, 1, 5 mM",High
+MC_ACTA2_mRNA,MaciasCeja2019,Figure 2d,mRNA,alpha-SMA / ACTA2,"0, 0.1, 0.5, 1, 5 mM",High
+MC_IL1B_mRNA,MaciasCeja2019,Figure 2d,mRNA,IL1B,"0, 0.1, 0.5, 1, 5 mM",Medium
+MC_TGFB_mRNA,MaciasCeja2019,Figure 2d,mRNA,TGFB,"0, 0.1, 0.5, 1, 5 mM",Medium
+KE_TWIST1,Ke2024,Figure 6,B-C,TWIST1,Myeloid-cell supernatant groups,High
+KE_FAP,Ke2024,Figure 6,B-E,FAP,Myeloid-cell supernatant groups,High
+KE_COL3,Ke2024,Figure 6,B-E,Type III collagen,Myeloid-cell supernatant groups,High

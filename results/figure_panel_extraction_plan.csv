@@ -1,0 +1,9 @@
+Reference_ID,Figure,Panel,Measurement,Targets,Groups,Time_hours,Sample_size,Variability,Extraction_status
+MaciasCeja2019,Figure 2,2d,mRNA expression,"SUCNR1, COL1A1, ACTA2, TGFB, IL1B","Succinate: 0, 0.1, 0.5, 1, 5 mM; TGF-beta",24.0,,Mean +/- SEM,Pending figure extraction
+MaciasCeja2019,Figure 2,2e,Protein expression and phosphorylation,"SUCNR1, alpha-SMA, p-STAT3, p-NF-kB","Succinate: 0, 0.1, 0.5, 1, 5 mM; TGF-beta",24.0,4.0,Mean +/- SEM,Pending figure extraction
+MaciasCeja2019,Figure 2,2f,Intracellular calcium,Intracellular calcium response,"Succinate: 0, 0.1, 0.5, 1, 5 mM; TGF-beta",24.0,,Image-based response,Not prioritized for ODE fitting
+MaciasCeja2019,Figure 2,2g,SUCNR1 knockdown,"SUCNR1, COL1A1, ACTA2, TGFB",Control siRNA and SUCNR1 siRNA,24.0,,Mean +/- SEM,Pending figure extraction
+Ke2024,Figure 6,6A,Myeloid ligand expression,"IL1A, IL1B, TNF, TGFB1, OSM and others",FACS-sorted myeloid subsets,,4.0,Heatmap,Pending supporting-data review
+Ke2024,Figure 6,6C,Fibroblast activation,"TWIST1, FAP, type III collagen",Myeloid-cell supernatant groups,,,Relative expression heatmap,Pending figure extraction
+Ke2024,Figure 6,6E,ECM deposition,"FAP, collagen I, collagen III",Myeloid-cell supernatant groups,,,Mean +/- SEM,Pending figure extraction
+Ke2024,Figure 6,6F,TWIST1 knockdown,TWIST1 expression,Control and TWIST1 knockdown,,,Mean +/- SEM,Pending figure extraction
