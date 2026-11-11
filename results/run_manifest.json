@@ -1,0 +1,155 @@
+{
+  "model": "Seven-state nonlinear ODE model of succinate-immune-stromal signaling",
+  "state_order": [
+    "I",
+    "S",
+    "R",
+    "M",
+    "T",
+    "F",
+    "C"
+  ],
+  "parameter_order": [
+    "beta_R",
+    "beta_M",
+    "delta_I",
+    "p_S",
+    "delta_S",
+    "alpha_R",
+    "K_S",
+    "delta_R",
+    "alpha_M",
+    "K_I",
+    "delta_M",
+    "alpha_T",
+    "K_M",
+    "delta_T",
+    "alpha_FR",
+    "K_FR",
+    "alpha_FT",
+    "K_FT",
+    "delta_F",
+    "p_C",
+    "delta_C"
+  ],
+  "baseline_parameters": {
+    "beta_R": 0.03,
+    "beta_M": 0.03,
+    "delta_I": 0.5,
+    "p_S": 0.4,
+    "delta_S": 1.0,
+    "alpha_R": 0.6,
+    "K_S": 0.5,
+    "delta_R": 0.7,
+    "alpha_M": 0.5,
+    "K_I": 0.5,
+    "delta_M": 0.35,
+    "alpha_T": 0.45,
+    "K_M": 0.5,
+    "delta_T": 0.25,
+    "alpha_FR": 0.35,
+    "K_FR": 0.5,
+    "alpha_FT": 0.45,
+    "K_FT": 0.5,
+    "delta_F": 0.12,
+    "p_C": 0.25,
+    "delta_C": 0.025
+  },
+  "parameter_bounds": {
+    "beta_R": [
+      0.0,
+      0.2
+    ],
+    "beta_M": [
+      0.0,
+      0.2
+    ],
+    "delta_I": [
+      0.2,
+      1.0
+    ],
+    "p_S": [
+      0.15,
+      0.8
+    ],
+    "delta_S": [
+      0.3,
+      2.0
+    ],
+    "alpha_R": [
+      0.2,
+      1.2
+    ],
+    "K_S": [
+      0.1,
+      5.0
+    ],
+    "delta_R": [
+      0.2,
+      1.5
+    ],
+    "alpha_M": [
+      0.2,
+      1.0
+    ],
+    "K_I": [
+      0.1,
+      2.0
+    ],
+    "delta_M": [
+      0.1,
+      0.8
+    ],
+    "alpha_T": [
+      0.15,
+      1.0
+    ],
+    "K_M": [
+      0.1,
+      2.0
+    ],
+    "delta_T": [
+      0.05,
+      0.6
+    ],
+    "alpha_FR": [
+      0.1,
+      0.8
+    ],
+    "K_FR": [
+      0.1,
+      2.0
+    ],
+    "alpha_FT": [
+      0.15,
+      1.0
+    ],
+    "K_FT": [
+      0.1,
+      2.0
+    ],
+    "delta_F": [
+      0.03,
+      0.3
+    ],
+    "p_C": [
+      0.05,
+      0.6
+    ],
+    "delta_C": [
+      0.005,
+      0.08
+    ]
+  },
+  "pulse_amplitude": 0.2,
+  "pulse_duration_days": 2.0,
+  "baseline_horizon_days": 60.0,
+  "lhs_sample_size": 200,
+  "lhs_sampling": "SciPy LatinHypercube with uniform scaling to stated bounds",
+  "random_seed": 20261110,
+  "solver": "DOP853",
+  "rtol": 1e-08,
+  "atol": 1e-10,
+  "max_step_days": 0.05,
+  "interpretation_note": "Normalized effective states; exploratory parameters; LHS quantiles are conditional simulation summaries, not clinical confidence intervals."
+}

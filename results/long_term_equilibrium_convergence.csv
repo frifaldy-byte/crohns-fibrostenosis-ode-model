@@ -1,6 +1,2 @@
-Metric,Value
-Final simulated ECM,12.149644074331794
-Calculated ECM equilibrium,12.151951132444294
-Absolute difference,0.0023070581124997602
-Relative difference,0.00018985083854889637
-Percentage difference,0.018985083854889638
+Sample_ID,Feedback_Threshold,Equilibrium_Type,Simulated_ECM_at_540_days,Calculated_ECM_equilibrium,Relative_difference,Relative_difference_percent,Peak_at_final_time
+144,4.932891074127794,Positive,12.14964407433117,12.151951132444294,0.00018985083860020513,0.018985083860020513,True
