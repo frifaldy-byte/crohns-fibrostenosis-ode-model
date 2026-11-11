@@ -1,404 +1,264 @@
-# Nonlinear Mathematical Modeling of Succinate–Immune–Stromal Signaling in Crohn’s Disease
 
-### A mechanistic ODE framework for fibrostenotic remodeling
+# Succinate–Immune–Stromal Signaling in Crohn’s Disease
 
-This repository contains the computational implementation and numerical analyses accompanying the research project:
+### A seven-state nonlinear ODE framework for fibrostenotic remodeling
 
-**“Nonlinear Mathematical Modeling of Succinate–Immune–Stromal Signaling in Crohn’s Disease: A Mechanistic ODE Framework for Fibrostenotic Remodeling.”**
+This repository contains the Python/Jupyter implementation and numerical analyses of a mechanistic model investigating inflammatory, metabolic, immune, and stromal processes associated with fibrostenotic remodeling in Crohn’s disease.
 
-The project develops a nonlinear, seven-state ordinary differential equation (ODE) model to investigate how inflammatory activity, succinate-associated signaling, inflammatory monocytes, TWIST1-associated activity, FAP-positive fibroblasts, and extracellular matrix (ECM) accumulation may interact during intestinal fibrostenotic remodeling in Crohn’s disease.
+The model brings together two proposed signaling routes:
 
-The model brings together two proposed signaling routes that converge at the fibroblast compartment:
+1. **Succinate-associated route:** inflammatory activity → extracellular succinate → SUCNR1-associated signaling → FAP-positive fibroblast activity → ECM accumulation.
+2. **Monocyte-associated route:** inflammatory activity → CD150-positive monocyte activity → TWIST1-associated activity → FAP-positive fibroblast activity → ECM accumulation.
 
-1. A succinate–SUCNR1-associated signaling route.
-2. A CD150-positive inflammatory monocyte–TWIST1-associated route.
+Both routes converge additively at the fibroblast compartment. This represents a modeling assumption and does not imply a direct molecular interaction between SUCNR1-associated signaling and TWIST1.
 
-The purpose is to provide a transparent mathematical framework for exploring the dynamics, feedback mechanisms, equilibrium behavior, parameter sensitivity, and uncertainty of these interacting processes.
+## 1. Model structure
 
-This is a computational and hypothesis-generating modeling study. The model is not intended to represent a clinically validated prediction tool or a patient-specific estimate of intestinal fibrosis.
+The system consists of seven state variables:
 
----
-
-## 1. Research background and motivation
-
-Intestinal fibrosis is an important complication of Crohn’s disease and is associated with chronic inflammation, altered stromal-cell activity, extracellular matrix deposition, and progressive tissue remodeling.
-
-Several biological studies have highlighted the potential roles of succinate-associated inflammatory signaling and interactions between inflammatory monocytes and fibroblast populations in intestinal inflammation and fibrosis.
-
-However, the dynamic relationships among these processes are not necessarily captured by considering each biological component independently.
-
-This project therefore uses a mechanistic ODE framework to explore how two upstream signaling routes may contribute to a shared fibroblast-mediated ECM remodeling process.
-
-The model is designed around a specific mathematical question:
-
-**How can interacting inflammatory, metabolic, immune-cell, and stromal signaling processes generate different transient and long-term ECM responses under a set of explicitly defined mechanistic assumptions?**
-
-The emphasis is on mathematical structure, dynamical behavior, and computational reproducibility rather than on claiming direct experimental causality for every modeled interaction.
-
----
-
-## 2. Model structure
-
-The model consists of seven state variables:
-
-| Variable | Biological interpretation |
+| Variable | Description |
 |---|---|
-| \(I(t)\) | Inflammatory activity |
-| \(S(t)\) | Extracellular succinate |
-| \(R(t)\) | SUCNR1-associated signaling activity |
-| \(M(t)\) | CD150-positive inflammatory monocyte activity |
-| \(T(t)\) | TWIST1-associated activity |
-| \(F(t)\) | FAP-positive fibroblast activity |
-| \(C(t)\) | Extracellular matrix (ECM) burden |
+| $I(t)$ | Inflammatory activity |
+| $S(t)$ | Extracellular succinate |
+| $R(t)$ | SUCNR1-associated signaling activity |
+| $M(t)$ | CD150-positive inflammatory monocyte activity |
+| $T(t)$ | TWIST1-associated activity |
+| $F(t)$ | FAP-positive fibroblast activity |
+| $C(t)$ | Extracellular matrix (ECM) burden |
 
 The state vector is
 
-\[
-X(t)=[I(t),S(t),R(t),M(t),T(t),F(t),C(t)]^T.
-\]
-
-Two signaling routes are represented:
-
-**Route A: Succinate-associated signaling**
-
-\[
-I \rightarrow S \rightarrow R \rightarrow F \rightarrow C
-\]
-
-**Route B: Monocyte-associated signaling**
-
-\[
-I \rightarrow M \rightarrow T \rightarrow F \rightarrow C
-\]
-
-Both routes contribute additively to fibroblast activation in the model.
-
-The convergence at \(F\) represents a modeling hypothesis about combined upstream contributions. It does not assume a direct molecular interaction between SUCNR1-associated signaling and TWIST1.
+$$
+X(t)=[I(t),S(t),R(t),M(t),T(t),F(t),C(t)]^{\mathsf T}.
+$$
 
 ### Model diagram
 
-The seven-state model structure is provided in:
+![Seven-state model structure](figures/seven_state_model_structure.png)
 
-`figures/seven_state_model_structure.png`
+## 2. Mathematical formulation
 
----
+The model is governed by the following nonlinear ODE system:
 
-## 3. Mathematical formulation
-
-The system is defined by the following nonlinear ODEs:
-
-\[
+$$
+\begin{aligned}
 \frac{dI}{dt}
-=
-u(t)+\beta_RR+\beta_MM-\delta_II
-\]
-
-\[
+&=u(t)+\beta_RR+\beta_MM-\delta_I I,\\
 \frac{dS}{dt}
-=
-p_SI-\delta_SS
-\]
-
-\[
+&=p_SI-\delta_SS,\\
 \frac{dR}{dt}
-=
-\alpha_R\frac{S}{K_S+S}
--\delta_RR
-\]
-
-\[
+&=\alpha_R H(S;K_S)-\delta_RR,\\
 \frac{dM}{dt}
-=
-\alpha_M\frac{I}{K_I+I}
--\delta_MM
-\]
-
-\[
+&=\alpha_M H(I;K_I)-\delta_MM,\\
 \frac{dT}{dt}
-=
-\alpha_T\frac{M}{K_M+M}
--\delta_TT
-\]
-
-\[
+&=\alpha_T H(M;K_M)-\delta_TT,\\
 \frac{dF}{dt}
-=
-\alpha_{FR}\frac{R}{K_{FR}+R}
-+
-\alpha_{FT}\frac{T}{K_{FT}+T}
--\delta_FF
-\]
-
-\[
+&=\alpha_{FR}H(R;K_{FR})
++\alpha_{FT}H(T;K_{FT})-\delta_FF,\\
 \frac{dC}{dt}
-=
-p_CF-\delta_CC.
-\]
+&=p_CF-\delta_CC.
+\end{aligned}
+$$
 
-The saturating activation function is represented by
+The saturating activation function is
 
-\[
+$$
 H(x;K)=\frac{x}{K+x}.
-\]
+$$
 
-Here, \(u(t)\) denotes an external inflammatory input. The saturating functions represent bounded activation responses, while the removal terms describe effective first-order loss processes.
+Here, $u(t)$ represents an external inflammatory input. The state variables are normalized effective activities rather than absolute biological concentrations or cell counts. Time is measured in days.
 
-All state variables are treated as normalized effective activities rather than absolute concentrations, cell counts, or directly measured clinical quantities.
+## 3. Baseline parameters
 
----
+| Parameter | Value | Interpretation |
+|---|---:|---|
+| $\beta_R$ | 0.03 | Feedback from $R$ to inflammation |
+| $\beta_M$ | 0.03 | Feedback from $M$ to inflammation |
+| $\delta_I$ | 0.50 | Inflammatory removal |
+| $p_S$ | 0.40 | Succinate production |
+| $\delta_S$ | 1.00 | Succinate removal |
+| $\alpha_R$ | 0.60 | Activation of $R$ |
+| $K_S$ | 0.50 | Succinate half-saturation |
+| $\delta_R$ | 0.70 | Removal of $R$ |
+| $\alpha_M$ | 0.50 | Activation of $M$ |
+| $K_I$ | 0.50 | Inflammatory half-saturation |
+| $\delta_M$ | 0.35 | Removal of $M$ |
+| $\alpha_T$ | 0.45 | Activation of $T$ |
+| $K_M$ | 0.50 | Monocyte half-saturation |
+| $\delta_T$ | 0.25 | Removal of $T$ |
+| $\alpha_{FR}$ | 0.35 | $R$-associated fibroblast input |
+| $K_{FR}$ | 0.50 | Half-saturation for $R$ input |
+| $\alpha_{FT}$ | 0.45 | $T$-associated fibroblast input |
+| $K_{FT}$ | 0.50 | Half-saturation for $T$ input |
+| $\delta_F$ | 0.12 | Fibroblast removal |
+| $p_C$ | 0.25 | ECM production |
+| $\delta_C$ | 0.025 | ECM removal |
 
-## 4. Baseline parameterization
+**Parameter provenance:** These baseline values are exploratory modeling assumptions, not experimentally estimated biological constants. Published biological studies motivate the pathway structure, but do not provide direct estimates for every coefficient in this reduced seven-state system. Parameter ranges used in the uncertainty analysis are specified in the Jupyter notebook.
 
-The baseline parameter values used in the computational experiments are:
+## 4. Equilibrium analysis
 
-| Parameter | Baseline value |
-|---|---:|
-| \(\beta_R\) | 0.03 |
-| \(\beta_M\) | 0.03 |
-| \(\delta_I\) | 0.50 |
-| \(p_S\) | 0.40 |
-| \(\delta_S\) | 1.00 |
-| \(\alpha_R\) | 0.60 |
-| \(K_S\) | 0.50 |
-| \(\delta_R\) | 0.70 |
-| \(\alpha_M\) | 0.50 |
-| \(K_I\) | 0.50 |
-| \(\delta_M\) | 0.35 |
-| \(\alpha_T\) | 0.45 |
-| \(K_M\) | 0.50 |
-| \(\delta_T\) | 0.25 |
-| \(\alpha_{FR}\) | 0.35 |
-| \(K_{FR}\) | 0.50 |
-| \(\alpha_{FT}\) | 0.45 |
-| \(K_{FT}\) | 0.50 |
-| \(\delta_F\) | 0.12 |
-| \(p_C\) | 0.25 |
-| \(\delta_C\) | 0.025 |
+For the autonomous system, $u(t)=0$, the disease-free equilibrium is
 
-These values are exploratory working assumptions used to investigate the mathematical behavior of the proposed system. They should not be interpreted as experimentally estimated biological constants or clinically fitted parameters.
+$$
+E_0=(0,0,0,0,0,0,0).
+$$
 
-The complete parameter definitions and sampling ranges are maintained in the Jupyter notebook.
+The equilibrium conditions can be reduced to a scalar equation for $I^*$:
 
----
+$$
+g(I)=
+\frac{\beta_R\alpha_R}{\delta_R}
+H\left(\frac{p_SI}{\delta_S};K_S\right)
++
+\frac{\beta_M\alpha_M}{\delta_M}H(I;K_I)
+-\delta_I I=0.
+$$
 
-## 5. Numerical experiments and computational analyses
+The corresponding model-specific feedback threshold is
 
-The computational workflow is organized in `01_model_setup.ipynb`.
+$$
+\mathcal{R}_{\mathrm{fb}}=
+\frac{\beta_R\alpha_Rp_S}
+{\delta_I\delta_R\delta_SK_S}
++
+\frac{\beta_M\alpha_M}
+{\delta_I\delta_MK_I}.
+$$
 
-It includes the following analyses.
+This is a threshold derived from the present model, not an epidemiological reproduction number.
 
-### 5.1 Baseline transient simulation
+For positive parameter values, $g''(I)<0$ for $I>0$. The resulting equilibrium classification is:
 
-A transient inflammatory input is used to examine the temporal response of the seven-state system.
+- If $\mathcal{R}_{\mathrm{fb}}\leq 1$, the DFE is the only nonnegative equilibrium.
+- If $\mathcal{R}_{\mathrm{fb}}>1$, the DFE remains present but is unstable, and a unique positive equilibrium exists.
 
-The baseline experiment uses an inflammatory pulse with amplitude 0.2 over the first 2 days, followed by a simulation over a 60-day period.
+The downstream variables $T$, $F$, and $C$ form a feed-forward cascade and contribute negative eigenvalues $-\delta_T$, $-\delta_F$, and $-\delta_C$ to the Jacobian. Under the stated model structure, the positive equilibrium is locally asymptotically stable.
 
-The resulting trajectories are used to examine the sequential response of inflammatory, metabolic, immune, stromal, and ECM-related state variables.
+## 5. Numerical experiments
 
-### 5.2 Equilibrium analysis
+The computational workflow is provided in `01_model_setup.ipynb`.
 
-The equilibrium structure is investigated by solving the steady-state conditions of the model.
+### Transient inflammatory response
 
-The analysis considers the disease-free equilibrium and possible positive equilibria under the specified parameter configurations.
+A two-day inflammatory pulse with amplitude $0.2$ is applied, followed by a 60-day simulation.
 
-A model-specific feedback threshold is also evaluated to characterize the local behavior of the inflammatory subsystem.
+For the baseline parameter set:
 
-This threshold is a mathematical quantity derived from the proposed model and should not be interpreted as an epidemiological reproduction number.
+- Peak ECM burden: approximately **4.881**.
+- Time to peak: approximately **31.90 days**.
+- ECM burden at day 60: approximately **3.090**.
 
-### 5.3 Local stability analysis
+![Seven-state trajectories](figures/model_A_all_state_trajectories.png)
 
-The Jacobian matrix is evaluated at relevant equilibria.
+![Transient ECM response](figures/model_A_transient_pulse.png)
 
-Eigenvalue analysis is used to investigate local asymptotic stability under the model assumptions.
+### Local sensitivity analysis
 
-### 5.4 One-at-a-time sensitivity analysis
-
-A local one-at-a-time (OAT) sensitivity analysis is performed by perturbing individual parameters around their baseline values.
-
-The analysis examines the effects of parameter changes on:
+One-at-a-time (OAT) sensitivity analysis uses ±10% parameter perturbations to examine:
 
 - Peak ECM burden.
 - Final ECM burden.
 - ECM area under the curve (AUC).
 - Time to peak ECM.
 
-The baseline perturbation magnitude is ±10%.
+![Peak ECM sensitivity](figures/sensitivity_peak_ecm.png)
 
-These results describe local parameter sensitivity and are not intended to represent a global sensitivity ranking.
+![Final ECM sensitivity](figures/sensitivity_final_ecm.png)
 
-### 5.5 Latin hypercube sampling and uncertainty analysis
+![ECM AUC sensitivity](figures/sensitivity_ecm_auc.png)
 
-Latin hypercube sampling (LHS) is used to explore parameter uncertainty across the specified parameter ranges.
+![Time-to-peak sensitivity](figures/sensitivity_time_to_peak_days.png)
 
-The computational design uses 200 parameter samples and a fixed random seed of `20261110`.
+These indices describe local sensitivity around the baseline parameter set, not global parameter importance.
 
-For each sampled parameter set, the model is numerically integrated and the resulting ECM-related outcomes are recorded.
+### Parameter uncertainty analysis
 
-The uncertainty analysis summarizes the distribution of:
+Latin hypercube sampling (LHS) was performed using 200 parameter sets and random seed `20261110`.
 
-- Peak ECM.
-- Final ECM.
-- ECM AUC.
-- Time to peak ECM.
+| Outcome | Median | 5th–95th percentile |
+|---|---:|---:|
+| Peak ECM | 1.751 | 0.121–23.677 |
+| Final ECM | 0.905 | 0.026–23.677 |
+| ECM AUC | 63.950 | 4.158–618.124 |
+| Time to peak (days) | 30.325 | 17.848–60.000 |
 
-The reported percentiles represent conditional simulation summaries under the selected sampling ranges. They are not clinical confidence intervals.
+These distributions are conditional on the selected parameter ranges and are not clinical confidence intervals. Peaks occurring at the simulation boundary are treated as horizon-limited observations.
 
-### 5.6 Parameter–outcome association
+![Peak ECM uncertainty](figures/uncertainty_peak_ecm.png)
 
-Spearman rank correlation is used to examine monotonic associations between sampled parameters and selected model outcomes.
+![Final ECM uncertainty](figures/uncertainty_final_ecm.png)
 
-These correlations provide an additional exploratory view of the relationship between parameter variation and simulated system behavior.
+![ECM AUC uncertainty](figures/uncertainty_ecm_auc.png)
 
-### 5.7 Long-term equilibrium diagnostics
+![Time-to-peak uncertainty](figures/uncertainty_time_to_peak_days.png)
 
-Extended numerical simulations are used to investigate whether selected transient responses approach their corresponding equilibrium states.
+### Sampled equilibrium classification
 
-A longer simulation horizon is used for diagnostic purposes. Peaks occurring at the final simulation time are treated as horizon-limited observations rather than evidence of permanent or irreversible fibrosis.
+Across the 200 sampled parameter sets:
 
----
+- **167 sets** had $\mathcal{R}_{\mathrm{fb}}\leq1$ and a locally asymptotically stable DFE.
+- **33 sets** had $\mathcal{R}_{\mathrm{fb}}>1$, with a unique locally asymptotically stable positive equilibrium. The DFE remained present but unstable in this regime.
 
-## 6. Repository organization
+A long-horizon simulation for one representative positive-equilibrium parameter set approached its calculated ECM equilibrium of approximately 12.152, with a relative difference of approximately 0.019%.
 
-The repository is organized as follows:
+![Long-term equilibrium diagnostic](figures/long_term_equilibrium_diagnostic.png)
+
+This comparison is a numerical convergence check for one representative parameter set.
+
+## 6. Repository contents
 
 ```text
 crohns-fibrostenosis-ode-model/
 │
 ├── 01_model_setup.ipynb
-│
 ├── figures/
-│   ├── seven_state_model_structure.png
-│   ├── model_A_transient_pulse.png
-│   ├── sensitivity_peak_ecm.png
-│   ├── sensitivity_final_ecm.png
-│   ├── sensitivity_ecm_auc.png
-│   ├── sensitivity_time_to_peak_days.png
-│   ├── uncertainty_peak_ecm.png
-│   ├── uncertainty_final_ecm.png
-│   ├── uncertainty_ecm_auc.png
-│   ├── uncertainty_time_to_peak_days.png
-│   └── ...
-│
 ├── results/
-│   └── Numerical result tables and computational summaries
-│
-├── LICENSE
-│
-└── README.md
+└── LICENSE
 ```
 
-The notebook contains the model implementation, parameter definitions, numerical simulations, analysis procedures, and figure-generation routines.
+The Jupyter notebook contains the model implementation, parameter definitions, simulations, equilibrium calculations, sensitivity analysis, uncertainty analysis, and figure-generation procedures.
 
-The `figures/` directory contains the generated graphical outputs in publication-friendly formats, including PNG and PDF files. The model diagram is also available in SVG format.
-
-The `results/` directory contains the numerical outputs and supporting computational summaries generated by the notebook.
-
----
+The `figures/` directory contains PNG and PDF outputs, while `results/` stores numerical summaries generated by the computational workflow.
 
 ## 7. Software and reproducibility
 
-The computational workflow is implemented in Python using commonly available scientific-computing libraries.
+The analysis uses Python and the following scientific-computing libraries:
 
-The main dependencies are:
-
-- Python 3
 - NumPy
 - SciPy
 - pandas
 - Matplotlib
-- Jupyter Notebook or JupyterLab
+- Jupyter Notebook / JupyterLab
 
-A compatible environment can be prepared using:
+Install the main dependencies using:
 
 ```bash
-pip install numpy pandas scipy matplotlib jupyterlab
+python -m pip install numpy scipy pandas matplotlib jupyterlab
 ```
 
-### Running the notebook
+To reproduce the analysis:
 
-1. Clone or download this repository.
-2. Open the repository directory in JupyterLab, Jupyter Notebook, or a compatible VS Code environment.
-3. Open `01_model_setup.ipynb`.
-4. Install the required dependencies if they are not already available.
-5. Execute the notebook sequentially from the first cell to the final validation and export section.
+1. Clone or download the repository.
+2. Install the dependencies.
+3. Open `01_model_setup.ipynb` in JupyterLab or Jupyter Notebook.
+4. Run the notebook sequentially from the first cell.
 
-The notebook creates the required output directories and saves the generated figures and numerical results during execution.
+The LHS random seed is fixed at `20261110`. Exact parameter ranges and numerical solver settings should be taken from the notebook used to generate the results.
 
-For reproducibility, the LHS random seed is fixed at `20261110`.
+## 8. Scope and limitations
 
-The numerical outputs may vary slightly across software environments or solver configurations due to floating-point and numerical integration differences.
+The model is a reduced mathematical representation of selected inflammatory and stromal processes. Its interpretation is subject to several limitations:
 
----
+- State variables are normalized activities, not direct biological measurements.
+- Parameter values and sampling ranges are exploratory assumptions.
+- The two routes converge additively at $F$; no direct SUCNR1–TWIST1 molecular interaction is modeled.
+- Spatial heterogeneity, collagen cross-linking, matrix metalloproteinases, and tissue mechanics are not explicitly represented.
+- The ECM state is not equivalent to a validated histological or clinical fibrosis score.
+- The model has not been fitted to patient-level data or clinically validated.
 
-## 8. Interpretation and scope
+Accordingly, the results describe the mathematical behavior of the specified system under its stated assumptions.
 
-The model is intended to support mechanistic exploration of interacting inflammatory, metabolic, immune, and stromal processes in Crohn’s disease.
+## 9. License
 
-Several aspects of the framework require careful interpretation:
-
-- State variables represent normalized effective activities, not directly measured biological quantities.
-- Parameter values are exploratory assumptions rather than estimates obtained from patient-level data.
-- The additive convergence of the two signaling routes at the fibroblast compartment is a modeling hypothesis.
-- The ECM state represents an effective matrix burden and is not equivalent to a validated histological or clinical fibrosis score.
-- The model does not explicitly represent spatial heterogeneity, collagen cross-linking, matrix metalloproteinase activity, tissue mechanics, or all known inflammatory and stromal cell populations.
-- The framework does not establish clinical predictive performance or therapeutic efficacy.
-
-The results should therefore be interpreted as mathematical and computational findings conditional on the model structure, parameterization, and numerical experimental design.
-
----
-
-## 9. Biological references
-
-The model development is informed by published research on succinate signaling, intestinal inflammation, inflammatory monocytes, fibroblast populations, and intestinal fibrosis.
-
-Selected references include:
-
-1. Macias-Ceja DC, et al. Succinate receptor mediates intestinal inflammation and fibrosis. *Mucosal Immunology*. 2019;12:178–187.  
-   https://doi.org/10.1038/s41385-018-0087-3
-
-2. Ke B-J, et al. Intercellular interaction between FAP+ fibroblasts and CD150+ inflammatory monocytes mediates fibrostenosis in Crohn’s disease. *Journal of Clinical Investigation*. 2024;134(16):e173835.  
-   https://doi.org/10.1172/JCI173835
-
-3. Zhang Y, et al. TWIST1+FAP+ fibroblasts in the pathogenesis of intestinal fibrosis in Crohn’s disease. *Journal of Clinical Investigation*. 2024;134(18):e179472.  
-   https://doi.org/10.1172/JCI179472
-
-4. Mukherjee PK, et al. Stricturing Crohn’s disease single-cell RNA sequencing reveals fibroblast heterogeneity and intercellular interactions. *Gastroenterology*. 2023;165(5):1180–1196.  
-   https://doi.org/10.1053/j.gastro.2023.07.014
-
-5. Rieder F, et al. Fibrosis in IBD: from pathogenesis to therapeutic targets. *Gut*. 2024;73(5):854–866.  
-   https://doi.org/10.1136/gutjnl-2023-329963
-
-6. Tannahill GM, et al. Succinate is an inflammatory signal that induces IL-1β through HIF-1α. *Nature*. 2013;496:238–242.  
-   https://doi.org/10.1038/nature11986
-
-These references provide biological context for the modeled pathways. Their inclusion does not imply that every mathematical interaction or parameter value has been experimentally established.
-
----
-
-## 10. Citation and use
-
-If you use this repository, its model structure, or its computational implementation in academic work, please cite the associated research manuscript when a citable publication or preprint becomes available.
-
-For work that directly reuses the code, please also refer to this repository and its version or commit identifier.
-
-The repository is intended to support transparency, inspection, and reproducibility of the computational framework.
-
----
-
-## 11. Author and research affiliation
-
-**Rifaldy Fajar**  
-WorldQuant University, USA  
-Email: rifaldyfajar251@gmail.com
-
-The affiliation is provided for author identification only. It should not be interpreted as an institutional endorsement, supervision, funding relationship, or official representation of the research project by WorldQuant University.
-
----
-
-## 12. License
-
-This project is distributed under the MIT License. See the `LICENSE` file for the full license terms.
-
----
-
-*This repository is maintained as a computational research resource accompanying the development of a nonlinear mathematical framework for investigating inflammatory and stromal signaling in Crohn’s disease-associated fibrostenotic remodeling.*
+This project is distributed under the MIT License. See the `LICENSE` file for details.
